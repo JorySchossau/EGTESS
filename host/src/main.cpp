@@ -90,6 +90,8 @@ double play(tAgent *A,tAgent *B);
 void xFadeTables(double target[][3], const double from[][3], const double to[][3], int length, int currentTimestep);
 void readPMfromCL(int argc, const char * argv[]);
 
+// INPUTS (12)
+// prog 1 2 3 4 5 6 7 8 9 phylogenyFileName generations transitionPeriod
 
 int main(int argc, const char * argv[])
 {
