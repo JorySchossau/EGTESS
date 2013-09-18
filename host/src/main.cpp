@@ -115,8 +115,8 @@ int main(int argc, const char * argv[])
 		useFile = true;
 		generations=atoi(argv[11]);
 		if (argc >= 13){
-			localmu=atoi(argv[12]);
-			deltamu=atoi(argv[13]);
+			localmu=atof(argv[12]);
+			deltamu=atof(argv[13]);
 			useLocalMutationFlag=true;
 			cout << "running with mu: " << localmu << ":" << deltamu << endl;
 		} else
