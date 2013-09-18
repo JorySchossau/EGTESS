@@ -46,7 +46,7 @@ public:
     int nrPointingAtMe;
     int born;
 	int tag;
-    double genome[2];
+    double genome[3];
     double p[3];
     double localMutationRate;
 	 double localMutationDelta;
@@ -88,7 +88,6 @@ void showPayoffs(void);
 void popCheck(void);
 void recalculateSingle(int who);
 double play(tAgent *A,tAgent *B);
-void xFadeTables(double target[][3], const double from[][3], const double to[][3], int length, int currentTimestep);
 void readPMfromCL(int argc, const char * argv[]);
 
 // INPUTS (12)
@@ -162,12 +161,14 @@ int main(int argc, const char * argv[])
             case 1:
                 A->genome[0]=1.0;
                 A->genome[1]=0.0;
+                A->genome[2]=0.0;
                 A->localMutationRate=0.0;
 					 A->localMutationDelta=deltamu;
                 break;
             case 2:
-                A->genome[0]=1.0;
-                A->genome[1]=1.0;
+                A->genome[0]=0.0;
+                A->genome[1]=0.0;
+                A->genome[2]=1.0;
                 A->localMutationRate=0.0;
 					 A->localMutationDelta=deltamu;
                 break;
@@ -269,8 +270,14 @@ tAgent::~tAgent(){
 
 void tAgent::setupRand(void){
     int i;
-    for(i=0;i<2;i++)
+	 double total=0.0f;
+    for(i=0;i<3;i++)
+	 {
         genome[i]=randDouble;
+		  total+=genome[i];
+	 }
+    for(i=0;i<3;i++)
+        genome[i]/=total; // rescale to smooth fitness landscape
 }
 
 void tAgent::inherit(tAgent *from){
@@ -278,16 +285,20 @@ void tAgent::inherit(tAgent *from){
     from->nrPointingAtMe++;
     ancestor=from;
     tag=from->tag;
+	 double total=0.0f;
     localMutationRate=from->localMutationRate;
-	 localMutationDelta=from->localMutationDelta;
-    if(randDouble<localMutationRate){
-        for(i=0;i<2;i++)
-            genome[i]+=(randDouble*2-1)*localMutationDelta;
-    }
-    else{
-        for(i=0;i<2;i++)
-            genome[i]=from->genome[i];
-    }
+	 for(i=0;i<3;i++)
+	 {
+	 	if(randDouble<localMutationRate)
+	 		genome[i]=(randDouble*2-1)*localMutationDelta;
+	 	total+=genome[i];
+	 }
+ 	 if (total > 0.0f)
+		 for(i=0;i<3;i++)
+			  genome[i]/=total; // rescale to smooth fitness landscape
+	 else
+		 for(i=0;i<3;i++)
+			 genome[i]=0.33f; // rescale to unstick the search
     makeRPSprob();
 }
 
@@ -314,16 +325,19 @@ void tAgent::LOD(FILE *F){
 void tAgent::makeRPSprob(void){
     int i;
     double s=0.0;
-    p[0]=genome[0]*genome[1];
-    p[1]=genome[0]*(1.0-genome[1]);
-    p[2]=(1.0-genome[0])*genome[1];
-    s=p[0]+p[1]+p[2];
-    if(s==0.0){
-        for(i=0;i<3;i++)
-            p[i]=1.0/3.0;
-    } else
-        for(i=0;i<3;i++)
-            p[i]/=s;
+    //p[0]=genome[0]*genome[1];
+    //p[1]=genome[0]*(1.0-genome[1]);
+    //p[2]=(1.0-genome[0])*genome[1];
+    //s=p[0]+p[1]+p[2];
+    //if(s==0.0){
+    //    for(i=0;i<3;i++)
+    //        p[i]=1.0/3.0;
+    //} else
+    //    for(i=0;i<3;i++)
+    //        p[i]/=s;
+	 p[1]=genome[1];
+	 p[2]=genome[2];
+	 p[3]=genome[3];
 }
 
 
@@ -405,12 +419,4 @@ double play(tAgent *A,tAgent *B){
         for(j=0;j<3;j++)
             S+=PM[i][j]*(A->p[i]*B->p[j]);
     return S;
-}
-
-void xFadeTables(double target[][3], double const from[][3], double const to[][3], int length, int currentTimestep){
-	for (int r=2; r>=0; --r){
-		for (int c=2; c>=0; --c){
-			target[r][c] = from[r][c]*(0.5*cos((currentTimestep*3.14159265359)/length)+0.5) + to[r][c]*(0.5*cos((length*3.14159265359-currentTimestep*3.14159265359)/length)+0.5);
-		}
-	}
 }
