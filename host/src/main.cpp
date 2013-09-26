@@ -49,7 +49,6 @@ public:
     double genome[2];
     double p[3];
     double localMutationRate;
-	 double localMutationDelta;
     tAgent();
     ~tAgent();
     void setupRand(void);
@@ -92,7 +91,7 @@ void xFadeTables(double target[][3], const double from[][3], const double to[][3
 void readPMfromCL(int argc, const char * argv[]);
 
 // INPUTS (12)
-// prog 1 2 3 4 5 6 7 8 9 phylogenyFileName generations localmu deltamu
+// prog 1 2 3 4 5 6 7 8 9 phylogenyFileName generations transitionPeriod
 
 int main(int argc, const char * argv[])
 {
@@ -107,9 +106,7 @@ int main(int argc, const char * argv[])
 	 bool useFile=false;
 	 int generations;
 	 int transitionPeriod; // how many generations to go from 1 table to the other
-	 bool useLocalMutationFlag=true;
-	 float localmu;
-	 float deltamu;
+	 bool dynamicEnvironment=false; // do we use oscillating environment?
     map<int,double> popDynamic;
 	 readPMfromCL(argc, argv); // set the payoff matrix from command line params
 	 if (argc >= 12){
@@ -172,6 +169,8 @@ int main(int argc, const char * argv[])
 					 A->localMutationDelta=deltamu;
                 break;
             default:
+					 A->setupRand();
+					 A->localMutationRate=localmu;
 					 A->setupRand();
 					 A->localMutationRate=localmu;
 					 A->localMutationDelta=deltamu;
