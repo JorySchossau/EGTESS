@@ -3,7 +3,7 @@
 mkdir -p bin
 
 EXENAME=
-DEFAULT_NAME="gameRPS"
+DEFAULT_NAME="localmu"
 EXTENSION=""
 COMPILER="g++"
 
