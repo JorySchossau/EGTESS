@@ -3,7 +3,7 @@
 mkdir -p bin
 
 EXENAME=
-DEFAULT_NAME="localmu"
+DEFAULT_NAME="threeGenes"
 EXTENSION=""
 COMPILER="g++"
 
