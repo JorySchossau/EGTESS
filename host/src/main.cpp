@@ -49,6 +49,7 @@ public:
     double genome[2];
     double p[3];
     double localMutationRate;
+	 double localMutationDelta;
     tAgent();
     ~tAgent();
     void setupRand(void);
@@ -97,6 +98,8 @@ int main(int argc, const char * argv[])
 {
     int i,j,g,k,x,y,nx,ny,deadGuy,newGuy;
     double maxFit;
+	 double localmu;
+	 double deltamu;
     FILE *PHYf;
     FILE *POPf;
 	 FILE *DISTf;
@@ -104,6 +107,7 @@ int main(int argc, const char * argv[])
 	 char popFileName[1<<10];
 	 char distFileName[1<<10];
 	 bool useFile=false;
+	 bool useLocalMutationFlag=false;
 	 int generations;
 	 int transitionPeriod; // how many generations to go from 1 table to the other
 	 bool dynamicEnvironment=false; // do we use oscillating environment?
