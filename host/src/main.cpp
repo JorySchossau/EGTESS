@@ -285,7 +285,13 @@ void tAgent::inherit(tAgent *from){
 	 localMutationDelta=from->localMutationDelta;
     if(randDouble<localMutationRate){
         for(i=0;i<2;i++)
+		  {
             genome[i]+=(randDouble*2-1)*localMutationDelta;
+				if (genome[i] < 0.0f)
+					genome[i] = 0.0f;
+				if (genome[i] > 1.0f)
+					genome[i] = 1.0f;
+		  }
     }
     else{
         for(i=0;i<2;i++)
