@@ -270,11 +270,10 @@ void tAgent::inherit(tAgent *from){
     ancestor=from;
     tag=from->tag;
     localMutationRate=from->localMutationRate;
-    if(randDouble<localMutationRate){
-        for(i=0;i<2;i++)
+    for(i=0;i<2;i++)
+		 if(randDouble<localMutationRate)
             genome[i]=randDouble;
-    }
-    else{
+    else
         for(i=0;i<2;i++)
             genome[i]=from->genome[i];
     }
@@ -385,7 +384,7 @@ void popCheck(void){
             maxFit=fitness[i];
         }
     }
-    cout<<(meanP/(double)(popSize-1))<<" "<<(meanF/(double)(popSize-1))<<" "<<population[j]->genome[0]<<" "<<population[j]->genome[0];
+    cout<<(meanP/(double)(popSize-1))<<" "<<(meanF/(double)(popSize-1))<<" "<<population[j]->genome[0]<<" "<<population[j]->genome[1];
 }
 
 double play(tAgent *A,tAgent *B){
