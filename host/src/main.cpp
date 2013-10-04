@@ -276,7 +276,6 @@ void tAgent::inherit(tAgent *from){
     else
         for(i=0;i<2;i++)
             genome[i]=from->genome[i];
-    }
     makeRPSprob();
 }
 
