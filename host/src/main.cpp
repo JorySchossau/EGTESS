@@ -24,6 +24,7 @@
 #endif
 
 #define DISTRIBUTION
+//#define JDS_RESCALE
 
 #define randDouble ((double)rand()/(double)RAND_MAX)
 
@@ -161,8 +162,9 @@ int main(int argc, const char * argv[])
                 A->localMutationRate=0.0;
                 break;
             default:
-                //A->genome[0]=0.5;
-                //A->genome[1]=0.5;
+                //A->genome[0]=0.3;
+                //A->genome[1]=0.3;
+                //A->genome[2]=0.3;
 					 A->setupRand();
                 A->localMutationRate=0.02;
                 break;
@@ -203,6 +205,7 @@ int main(int argc, const char * argv[])
         //if((globalUpdate&63)==0){
         //if((globalUpdate&31)==0){
         //if((globalUpdate&15)==0){
+		  //if ((globalUpdate&3)==0){
 			  cout<<globalUpdate<<" ";
             popCheck();
             cout<<endl;
@@ -265,8 +268,10 @@ void tAgent::setupRand(void){
         genome[i]=randDouble;
 		  total+=genome[i];
 	 }
+#ifdef JDS_RESCALE
     for(i=0;i<3;i++)
         genome[i]/=total; // rescale to smooth fitness landscape
+#endif
 }
 
 void tAgent::inherit(tAgent *from){
@@ -280,14 +285,22 @@ void tAgent::inherit(tAgent *from){
 	 {
 	 	if(randDouble<localMutationRate)
 	 		genome[i]=randDouble;
+		else
+			genome[i]=from->genome[i];
 	 	total+=genome[i];
 	 }
+#ifdef JDS_RESCALE
  	 if (total > 0.0f)
+	 {
 		 for(i=0;i<3;i++)
 			  genome[i]/=total; // rescale to smooth fitness landscape
+	 }
 	 else
+	 {
 		 for(i=0;i<3;i++)
 			 genome[i]=0.33f; // rescale to unstick the search
+	 }
+#endif
     makeRPSprob();
 }
 
@@ -297,7 +310,7 @@ void tAgent::LOD(){
     else
         printf("generation,g0,g1,scissors,rock,paper\n");
     printf("%i,%f,%f,%f,%f,%f\n",born
-            ,genome[0],genome[1]
+            ,genome[0],genome[1],genome[2]
             ,p[0],p[1],p[2]);
 }
 
@@ -307,26 +320,14 @@ void tAgent::LOD(FILE *F){
     else
         fprintf(F,"generation,g0,g1,scissors,rock,paper\n");
     fprintf(F,"%i,%f,%f,%f,%f,%f\n",born
-            ,genome[0],genome[1]
+            ,genome[0],genome[1],genome[2]
             ,p[0],p[1],p[2]);
 }
 
 void tAgent::makeRPSprob(void){
-    int i;
-    double s=0.0;
-    //p[0]=genome[0]*genome[1];
-    //p[1]=genome[0]*(1.0-genome[1]);
-    //p[2]=(1.0-genome[0])*genome[1];
-    //s=p[0]+p[1]+p[2];
-    //if(s==0.0){
-    //    for(i=0;i<3;i++)
-    //        p[i]=1.0/3.0;
-    //} else
-    //    for(i=0;i<3;i++)
-    //        p[i]/=s;
+	 p[0]=genome[0];
 	 p[1]=genome[1];
 	 p[2]=genome[2];
-	 p[3]=genome[3];
 }
 
 
@@ -398,7 +399,7 @@ void popCheck(void){
             maxFit=fitness[i];
         }
     }
-    cout<<(meanP/(double)(popSize-1))<<" "<<(meanF/(double)(popSize-1))<<" "<<population[j]->genome[0]<<" "<<population[j]->genome[0];
+    cout<<(meanP/(double)(popSize-1))<<" "<<(meanF/(double)(popSize-1))<<" "<<population[j]->genome[0]<<" "<<population[j]->genome[1]<<" "<<population[j]->genome[2];
 }
 
 double play(tAgent *A,tAgent *B){
