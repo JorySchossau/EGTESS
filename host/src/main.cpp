@@ -49,6 +49,7 @@ public:
     double genome[2];
     double p[3];
     double localMutationRate;
+	 double localMutationDelta;
     tAgent();
     ~tAgent();
     void setupRand(void);
@@ -97,6 +98,8 @@ int main(int argc, const char * argv[])
 {
     int i,j,g,k,x,y,nx,ny,deadGuy,newGuy;
     double maxFit;
+	 double localmu;
+	 double deltamu;
     FILE *PHYf;
     FILE *POPf;
 	 FILE *DISTf;
@@ -104,6 +107,7 @@ int main(int argc, const char * argv[])
 	 char popFileName[1<<10];
 	 char distFileName[1<<10];
 	 bool useFile=false;
+	 bool useLocalMutationFlag=false;
 	 int generations;
 	 int transitionPeriod; // how many generations to go from 1 table to the other
 	 bool dynamicEnvironment=false; // do we use oscillating environment?
@@ -113,8 +117,10 @@ int main(int argc, const char * argv[])
 		useFile = true;
 		generations=atoi(argv[11]);
 		if (argc >= 13){
-			transitionPeriod=atoi(argv[12]);
-			dynamicEnvironment=true;
+			localmu=atof(argv[12]);
+			deltamu=atof(argv[13]);
+			useLocalMutationFlag=true;
+			cout << "running with mu: " << localmu << ":" << deltamu << endl;
 		} else
 			transitionPeriod=0; // 0 will cause an error if used in staticEnvironment
 		
@@ -135,6 +141,11 @@ int main(int argc, const char * argv[])
 	 } else
 		 printf("paper,rock,scissors,mixed\n");
     srand((int)getpid()); // this is not cross-platofrm. Changed for condor compat.
+	 if (!useLocalMutationFlag)
+	 {
+		 localmu = 0.02f;
+		 deltamu = 1.0f;
+	 }
     //srand(time(NULL)); // condor compatible
     population.clear();
     for(i=0;i<popSize;i++){
@@ -147,22 +158,26 @@ int main(int argc, const char * argv[])
                 A->genome[0]=0.0;
                 A->genome[1]=1.0;
                 A->localMutationRate=0.0;
+					 A->localMutationDelta=deltamu;
                 break;
             case 1:
                 A->genome[0]=1.0;
                 A->genome[1]=0.0;
                 A->localMutationRate=0.0;
+					 A->localMutationDelta=deltamu;
                 break;
             case 2:
                 A->genome[0]=1.0;
                 A->genome[1]=1.0;
                 A->localMutationRate=0.0;
+					 A->localMutationDelta=deltamu;
                 break;
             default:
-                //A->genome[0]=0.5;
-                //A->genome[1]=0.5;
 					 A->setupRand();
-                A->localMutationRate=0.02;
+					 A->localMutationRate=localmu;
+					 A->setupRand();
+					 A->localMutationRate=localmu;
+					 A->localMutationDelta=deltamu;
                 break;
         }
         A->makeRPSprob();
@@ -170,9 +185,6 @@ int main(int argc, const char * argv[])
     }
     recalculateEverything();
     for(globalUpdate=1;globalUpdate<generations;globalUpdate++){
-			if (dynamicEnvironment) {
-			  xFadeTables(PM,PM_ROCK,PM_SCISSORS,transitionPeriod,globalUpdate);
-			}
         //showPayoffs();
         maxFit=0.0;
         for(i=0;i<popSize;i++){
@@ -270,12 +282,21 @@ void tAgent::inherit(tAgent *from){
     ancestor=from;
     tag=from->tag;
     localMutationRate=from->localMutationRate;
-    for(i=0;i<2;i++)
-		 if(randDouble<localMutationRate)
-            genome[i]=randDouble;
-    else
+	 localMutationDelta=from->localMutationDelta;
+    if(randDouble<localMutationRate){
+        for(i=0;i<2;i++)
+		  {
+            genome[i]+=(randDouble*2-1)*localMutationDelta;
+				if (genome[i] < 0.0f)
+					genome[i] = 0.0f;
+				if (genome[i] > 1.0f)
+					genome[i] = 1.0f;
+		  }
+	 }
+    else{
         for(i=0;i<2;i++)
             genome[i]=from->genome[i];
+    }
     makeRPSprob();
 }
 
