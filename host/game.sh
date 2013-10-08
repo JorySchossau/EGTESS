@@ -11,6 +11,16 @@ REPLICATES=$4
 LOCALMU=$5
 DELTAMU=$6
 
+function list() {
+	echo
+	echo "Games available:"
+	echo
+	ls -1 bin/*.exe
+	echo
+	exit
+	exit
+}
+
 function help() {
 echo
 echo "Usage: $0 p a y o f f m a t windowsEXE NewOutFolderName Generations Replicates [mu deltaMu]"
@@ -37,30 +47,27 @@ echo "Period: optionally, to use a dynamic fitness landscape."
 echo "   period specifies how many generations it takes to"
 echo "   transition from one table to the other."
 echo
+list
 exit
 }
+
 
 
 if [ -z $PROGRAM ]
 then
 	help
-exit
+	exit
 fi
 
 if [ $1 == "list" ]
 then
-	echo
-	echo "Games available:"
-	echo
-	ls -1 bin/*.exe
-	echo
-	exit
+	list
 fi
 
 if [ -z $RUN_DIR ]
 then
     help
-exit
+	exit
 fi
 
 if [ -z $PERIOD ]
@@ -132,6 +139,8 @@ then
 	help
 fi
 
+echo "Copying program to $RUN_DIR"
+
 mkdir -p $RUN_DIR
 cp bin/$PROGRAM $RUN_DIR
 
@@ -139,5 +148,8 @@ module load condor
 
 echo -ne Submitting Batch:
 sed -e s#XRUNDIRX#$RUN_DIR#g condor.blank.egtmix.sh | sed -e s#XPMX#"$PM"#g | sed -e s#XPROGRAMX#$PROGRAM#g | sed -e s#XPERIODX#$PERIOD#g | sed -e s#XRUNSX#$REPLICATES#g | sed -e s#XOUTPUTNAMEX#replicate#g | sed -e s#XGENERATIONSX#$GENERATIONS#g | sed -e s#XLOCALMUX#$LOCALMU#g | sed -e s#XDELTAMUX#$DELTAMU#g > $RUN_DIR/condorEGTMix.sh
+#pushd $RUN_DIR
 condor_submit $RUN_DIR/condorEGTMix.sh > /dev/null
-echo Done!
+#popd
+echo "Done!"
+
