@@ -11,16 +11,21 @@ GENES=2
 GENES_DEFINE="#define GENES"
 GENES_DECLARATION="$GENES_DEFINE 2"
 
+LOCALMU=false
+LOCALMU_DEFINE="#define LOCALMU"
+LOCALMU_DECLARATION="$LOCALMU_DEFINE false"
+
 help() {
 	echo
 	echo Usage: "./$(basename $0) [-hwg]"
 	echo "       -h help"
 	echo "       -w build win32 using mingw32"
+	echo "       -l build for local mu"
 	echo "       -g<#genes> change default number of genes (only 2,3 are valid yet)"
 	echo
 }
 
-while getopts "hwg:" OPTIONS; do
+while getopts "hg:lw" OPTIONS; do
 	case $OPTIONS in
 		h) help;;
 		w)
@@ -31,6 +36,10 @@ while getopts "hwg:" OPTIONS; do
 		g) 
 			GENES=$OPTARG
 			EXENAME=$EXENAME.g$GENES
+			;;
+		l)
+			LOCALMU=true
+			EXENAME=$EXENAME.l
 			;;
 		?)
 			echo "Unknown option: $OPTARG"
@@ -56,7 +65,9 @@ done
 #fi
 
 sed -ie "s/$GENES_DECLARATION/$GENES_DEFINE $GENES/" src/main.cpp
+sed -ie "s/$LOCALMU_DECLARATION/$LOCALMU_DEFINE $LOCALMU/" src/main.cpp
 
 $COMPILER -O3 -o bin/$EXENAME$EXTENSION src/main.cpp;
 
+sed -ie "s/$LOCALMU_DEFINE $LOCALMU/$LOCALMU_DECLARATION/" src/main.cpp
 sed -ie "s/$GENES_DEFINE $GENES/$GENES_DECLARATION/" src/main.cpp
