@@ -25,6 +25,7 @@
 
 #define DISTRIBUTION
 #define GENES 2
+#define LOCALMU false
 
 #define randDouble ((double)rand()/(double)RAND_MAX)
 
@@ -315,13 +316,20 @@ int main(int argc, const char * argv[])
 			localMutationRate=from->localMutationRate;
 			localMutationDelta=from->localMutationDelta;
 			if(randDouble<localMutationRate){
-				for(i=0;i<GENES;i++)
-				{
-					genome[i]+=(randDouble*2-1)*localMutationDelta;
-					if (genome[i] < 0.0f)
-						genome[i] = 0.0f;
-					if (genome[i] > 1.0f)
-						genome[i] = 1.0f;
+				if (LOCALMU == true) {
+					for(i=0;i<GENES;i++)
+					{
+						genome[i]+=(randDouble*2-1)*localMutationDelta;
+						if (genome[i] < 0.0f)
+							genome[i] = 0.0f;
+						if (genome[i] > 1.0f)
+							genome[i] = 1.0f;
+					}
+				} else {
+					for(i=0;i<GENES;i++)
+					{
+						genome[i]=randDouble;
+					}
 				}
 			}
 			else{
