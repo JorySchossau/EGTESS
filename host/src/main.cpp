@@ -362,7 +362,7 @@ int main(int argc, const char * argv[])
 		void tAgent::makeRPSprob(void){
 			int i;
 			double s=0.0;
-			if (GENES == 2) {
+			if (GENES == 3) {
 				p[0]=genome[0];
 				p[1]=genome[1];
 				p[2]=genome[2];
