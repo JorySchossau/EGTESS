@@ -115,14 +115,22 @@ int main(int argc, const char * argv[])
 	bool dynamicEnvironment=false; // do we use oscillating environment?
 	map<int,double> popDynamic;
 	readPMfromCL(argc, argv); // set the payoff matrix from command line params
+	if (!useLocalMutationFlag)
+	{
+		localmu = 0.02f;
+		deltamu = 1.0f;
+	}
 	if (argc >= 12){
 		useFile = true;
 		generations=atoi(argv[11]);
 		if (argc >= 13){
 			localmu=atof(argv[12]);
-			deltamu=atof(argv[13]);
-			useLocalMutationFlag=true;
-			cout << "running with mu: " << localmu << ":" << deltamu << endl;
+			cout << "mu: " << localmu << endl;
+			if (argc >= 13){
+				deltamu=atof(argv[13]);
+				useLocalMutationFlag=true;
+				cout << "deltamu: " << deltamu << endl;
+			}
 		} else
 			transitionPeriod=0; // 0 will cause an error if used in staticEnvironment
 
@@ -143,11 +151,6 @@ int main(int argc, const char * argv[])
 	} else
 		printf("paper,rock,scissors,mixed\n");
 	srand((int)getpid()); // this is not cross-platofrm. Changed for condor compat.
-	if (!useLocalMutationFlag)
-	{
-		localmu = 0.02f;
-		deltamu = 1.0f;
-	}
 	//srand(time(NULL)); // condor compatible
 	population.clear();
 	for(i=0;i<popSize;i++){
