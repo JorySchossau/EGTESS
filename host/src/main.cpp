@@ -374,7 +374,8 @@ int main(int argc, const char * argv[])
 			s=p[0]+p[1]+p[2];
 			if(s==0.0){
 				for(i=0;i<3;i++)
-					p[i]=1.0/3.0;
+					p[i]=randDouble;
+					//p[i]=1.0/3.0;
 			} else
 				for(i=0;i<3;i++)
 					p[i]/=s;
