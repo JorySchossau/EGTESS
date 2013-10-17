@@ -67,7 +67,8 @@ done
 sed -ie "s/$GENES_DECLARATION/$GENES_DEFINE $GENES/" src/main.cpp
 sed -ie "s/$LOCALMU_DECLARATION/$LOCALMU_DEFINE $LOCALMU/" src/main.cpp
 
-$COMPILER -O3 -o bin/$EXENAME$EXTENSION src/main.cpp;
+$COMPILER -O3 -s -fno-rtti -fno-exceptions -o bin/$EXENAME$EXTENSION src/main.cpp;
+#if [ "$COMPILER" != "g++" ]; then i386-mingw32-strip bin/$EXENAME$EXTENSION; fi
 
 sed -ie "s/$LOCALMU_DEFINE $LOCALMU/$LOCALMU_DECLARATION/" src/main.cpp
 sed -ie "s/$GENES_DEFINE $GENES/$GENES_DECLARATION/" src/main.cpp
