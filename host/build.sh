@@ -15,6 +15,10 @@ LOCALMU=false
 LOCALMU_DEFINE="#define LOCALMU"
 LOCALMU_DECLARATION="$LOCALMU_DEFINE false"
 
+MAPPING=0 #0 by default (normal mapping)
+MAPPING_DEFINE="#define MAPPING"
+MAPPING_DECLARATION="$MAPPING_DEFINE 0"
+
 help() {
 	echo
 	echo Usage: "./$(basename $0) [-hwg]"
@@ -22,10 +26,11 @@ help() {
 	echo "       -w build win32 using mingw32"
 	echo "       -l build for local mu"
 	echo "       -g<#genes> change default number of genes (only 2,3 are valid yet)"
+	echo "       -m<#permuteID> 0,1,2  Which 2-3 mapping permutation to use."
 	echo
 }
 
-while getopts "hg:lw" OPTIONS; do
+while getopts "hg:lwm:" OPTIONS; do
 	case $OPTIONS in
 		h) help;;
 		w)
@@ -40,6 +45,10 @@ while getopts "hg:lw" OPTIONS; do
 		l)
 			LOCALMU=true
 			EXENAME=$EXENAME.l
+			;;
+		p)
+			MAPPING=$OPTARG
+			EXENAME=$EXENAME.m$MAPPING
 			;;
 		?)
 			echo "Unknown option: $OPTARG"
@@ -66,9 +75,11 @@ done
 
 sed -ie "s/$GENES_DECLARATION/$GENES_DEFINE $GENES/" src/main.cpp
 sed -ie "s/$LOCALMU_DECLARATION/$LOCALMU_DEFINE $LOCALMU/" src/main.cpp
+sed -ie "s/$MAPPING_DECLARATION/$MAPPING_DEFINE $MAPPING/" src/main.cpp
 
 $COMPILER -O3 -s -fno-rtti -fno-exceptions -o bin/$EXENAME$EXTENSION src/main.cpp;
 #if [ "$COMPILER" != "g++" ]; then i386-mingw32-strip bin/$EXENAME$EXTENSION; fi
 
 sed -ie "s/$LOCALMU_DEFINE $LOCALMU/$LOCALMU_DECLARATION/" src/main.cpp
 sed -ie "s/$GENES_DEFINE $GENES/$GENES_DECLARATION/" src/main.cpp
+sed -ie "s/$MAPPING_DEFINE $MAPPING/$MAPPING_DECLARATION/" src/main.cpp
