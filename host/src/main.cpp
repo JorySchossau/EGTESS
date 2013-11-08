@@ -26,6 +26,7 @@
 #define DISTRIBUTION
 #define GENES 2
 #define LOCALMU false
+#define MAPPING 0 // 0,1,2,3,4,5 for each 2-3 mapping permutation
 
 #define randDouble ((double)rand()/(double)RAND_MAX)
 
@@ -370,16 +371,44 @@ int main(int argc, const char * argv[])
 				p[1]=genome[1];
 				p[2]=genome[2];
 			} else {
-				p[0]=genome[0]*genome[1];
-				p[1]=genome[0]*(1.0-genome[1]);
-				p[2]=(1.0-genome[0])*genome[1];
+				switch(MAPPING) {
+					case 0:
+						p[0]=genome[0]*genome[1];
+						p[1]=genome[0]*(1.0-genome[1]);
+						p[2]=(1.0-genome[0])*genome[1];
+						break;
+					case 1:
+						p[0]=genome[0]*genome[1];
+						p[1]=(1.0-genome[0])*genome[1];
+						p[2]=genome[0]*(1.0-genome[1]);
+						break;
+					case 2:
+						p[0]=genome[0]*(1.0-genome[1]);
+						p[1]=genome[0]*genome[1];
+						p[2]=(1.0-genome[0])*genome[1];
+						break;
+					case 3:
+						p[0]=genome[0]*(1.0-genome[1]);
+						p[1]=(1.0-genome[0])*genome[1];
+						p[2]=genome[0]*genome[1];
+						break;
+					case 4:
+						p[0]=(1.0-genome[0])*genome[1];
+						p[1]=genome[0]*(1.0-genome[1]);
+						p[2]=genome[0]*genome[1];
+						break;
+					case 5:
+						p[0]=(1.0-genome[0])*genome[1];
+						p[1]=genome[0]*genome[1];
+						p[2]=genome[0]*(1.0-genome[1]);
+						break;
+				}
 			}
 			s=p[0]+p[1]+p[2];
 			if(s==0.0){
 				for(i=0;i<3;i++)
 				{
 					p[i]=randDouble;
-					//p[i]=1.0/3.0;
 				}
 				s=p[0]+p[1]+p[2];
 				for(i=0;i<3;i++)
