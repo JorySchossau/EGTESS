@@ -4,6 +4,8 @@
 # Adami Lab
 #
 
++ProjectName = "TG-IBN130008"
+
 notification = Error
 notify_user = joryschossau@gmail.com
  
