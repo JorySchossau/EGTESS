@@ -52,7 +52,8 @@ run_as_owner = false
  
 # system requirements
 # if you only want to run on the windows condor cluster, you should list the folowing line
-requirements = (OpSys == "WINNT61") && (Arch == "X86_64")
+requirements = (OpSys == "LINUX") && (Arch == "X86_64")
+#requirements = (OpSys == "WINNT61") && (Arch == "X86_64")
 #requirements = (OpSys == "WINNT51") && (Arch == "INTEL")
  
 arguments = XPMX $(OUTPUT_NAME).$(Process) $(GENERATIONS) $(LOCALMU) $(DELTAMU)
