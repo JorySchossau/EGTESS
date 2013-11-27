@@ -48,7 +48,7 @@ while getopts "hg:lwp:" OPTIONS; do
 			;;
 		p)
 			MAPPING=$OPTARG
-			EXENAME=$EXENAME.m$MAPPING
+			EXENAME=$EXENAME.p$MAPPING
 			;;
 		?)
 			echo "Unknown option: $OPTARG"
