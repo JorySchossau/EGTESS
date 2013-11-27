@@ -21,16 +21,16 @@ MAPPING_DECLARATION="$MAPPING_DEFINE 0"
 
 help() {
 	echo
-	echo Usage: "./$(basename $0) [-hwg]"
+	echo Usage: "./$(basename $0) [-hwg:lp:]"
 	echo "       -h help"
 	echo "       -w build win32 using mingw32"
 	echo "       -l build for local mu"
 	echo "       -g<#genes> change default number of genes (only 2,3 are valid yet)"
-	echo "       -m<#permuteID> 0,1,2  Which 2-3 mapping permutation to use."
+	echo "       -p<#permuteID> 0,1,2  Which 2-3 mapping permutation to use."
 	echo
 }
 
-while getopts "hg:lwm:" OPTIONS; do
+while getopts "hg:lwp:" OPTIONS; do
 	case $OPTIONS in
 		h) help;;
 		w)
