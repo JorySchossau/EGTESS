@@ -27,6 +27,7 @@
 #define GENES 2
 #define LOCALMU false
 #define MAPPING 0 // 0,1,2,3,4,5 for each 2-3 mapping permutation
+#define SAMPLING 16383 // 7=every 8, 3=every4, 255=every256
 
 #define randDouble ((double)rand()/(double)RAND_MAX)
 
@@ -241,7 +242,7 @@ int main(int argc, const char * argv[])
 		population[deadGuy]=new tAgent;
 		population[deadGuy]->inherit(population[newGuy]);
 		recalculateSingle(deadGuy);
-		if((globalUpdate&16383)==0){
+		if((globalUpdate& SAMPLING )==0){
 			//if((globalUpdate&8191)==0){
 			//if((globalUpdate&4095)==0){
 			//if((globalUpdate&2047)==0){
