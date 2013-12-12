@@ -371,6 +371,12 @@ int main(int argc, const char * argv[])
 				p[0]=genome[0];
 				p[1]=genome[1];
 				p[2]=genome[2];
+				s=p[0]+p[1]+p[2];
+				if(s==0.0){
+					// don't do anything (code was here)
+				} else
+					for(i=0;i<3;i++)
+						p[i]/=s;
 			} else {
 				switch(MAPPING) {
 					case 0:
@@ -404,19 +410,13 @@ int main(int argc, const char * argv[])
 						p[2]=genome[0]*(1.0-genome[1]);
 						break;
 				}
-			}
-			s=p[0]+p[1]+p[2];
-			if(s==0.0){
-				for(i=0;i<3;i++)
-				{
-					p[i]=randDouble;
+				if (p[0]+p[1] != 0.0) {
+					s = p[0] + p[1] - p[0]*p[1];
+					p[0] = p[0]/s;
+					p[1] = p[1]/s;
+					p[2] = p[2]/s;
 				}
-				s=p[0]+p[1]+p[2];
-				for(i=0;i<3;i++)
-					p[i]/=s;
-			} else
-				for(i=0;i<3;i++)
-					p[i]/=s;
+			}
 		}
 
 
