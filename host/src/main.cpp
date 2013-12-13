@@ -372,7 +372,7 @@ int main(int argc, const char * argv[])
 				p[1]=genome[1];
 				p[2]=genome[2];
 				s=p[0]+p[1]+p[2];
-				if(s!=0.0){
+				if(s > 0.0001){
 					for(i=0;i<3;i++)
 						p[i]/=s;
 				}
@@ -410,11 +410,17 @@ int main(int argc, const char * argv[])
 						break;
 				}
 				s = p[0] + p[1] - p[0]*p[1];
-				if (s != 0.0) {
-					p[0] = p[0]/s;
-					p[1] = p[1]/s;
-					p[2] = p[2]/s;
+				if (p[0]+p[1] > 0.0001) {
+					p[0] /= s;
+					p[1] /= s;
+					p[2] /= s;
 				}
+			}
+			for(i=0;i<3;i++) {
+				if (p[i] > 1.0)
+					p[i] = 1.0;
+				if (p[i] < 0.0001)
+					p[i] = 0.0001;
 			}
 		}
 
