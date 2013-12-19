@@ -144,7 +144,7 @@ echo "Copying program to $RUN_DIR"
 mkdir -p $RUN_DIR
 cp bin/$PROGRAM $RUN_DIR
 
-module load condor
+#module load condor
 
 echo -ne Submitting Batch:
 sed -e s#XRUNDIRX#$RUN_DIR#g condor.blank.egtmix.sh | sed -e s#XPMX#"$PM"#g | sed -e s#XPROGRAMX#$PROGRAM#g | sed -e s#XPERIODX#$PERIOD#g | sed -e s#XRUNSX#$REPLICATES#g | sed -e s#XOUTPUTNAMEX#replicate#g | sed -e s#XGENERATIONSX#$GENERATIONS#g | sed -e s#XLOCALMUX#$LOCALMU#g | sed -e s#XDELTAMUX#$DELTAMU#g > $RUN_DIR/condorEGTMix.sh
