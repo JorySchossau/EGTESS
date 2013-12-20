@@ -183,8 +183,6 @@ int main(int argc, const char * argv[])
 				default:
 					A->setupRand();
 					A->localMutationRate=localmu;
-					A->setupRand();
-					A->localMutationRate=localmu;
 					A->localMutationDelta=deltamu;
 					break;
 			}
@@ -371,11 +369,8 @@ int main(int argc, const char * argv[])
 				p[0]=genome[0];
 				p[1]=genome[1];
 				p[2]=genome[2];
-				s=p[0]+p[1]+p[2];
-				if(s > 0.0001){
-					for(i=0;i<3;i++)
-						p[i]/=s;
-				}
+				for(i=0;i<3;i++)
+					p[i]/=3.0;
 			} else {
 				switch(MAPPING) {
 					case 0:
@@ -409,19 +404,19 @@ int main(int argc, const char * argv[])
 						p[2]=genome[0]*(1.0-genome[1]);
 						break;
 				}
-				s = p[0] + p[1] - p[0]*p[1];
-				if (p[0]+p[1] > 0.0001) {
+				s = genome[0] + genome[1] - genome[0]*genome[1];
+				if (genome[0]+genome[1] > 0.0001) {
 					p[0] /= s;
 					p[1] /= s;
 					p[2] /= s;
 				}
 			}
-			for(i=0;i<3;i++) {
-				if (p[i] > 1.0)
-					p[i] = 1.0;
-				if (p[i] < 0.0001)
-					p[i] = 0.0001;
-			}
+			//for(i=0;i<3;i++) {
+			//	if (p[i] > 1.0)
+			//		p[i] = 1.0;
+			//	if (p[i] < 0.0001)
+			//		p[i] = 0.0001;
+			//}
 		}
 
 
