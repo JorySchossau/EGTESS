@@ -374,7 +374,7 @@ int main(int argc, const char * argv[])
 				s=p[0]+p[1]+p[2];
 				if(s > 0.0001){
 					for(i=0;i<3;i++)
-						p[i]/=s;
+						p[i]/=3.0;
 				}
 			} else {
 				switch(MAPPING) {
