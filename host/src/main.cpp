@@ -370,10 +370,12 @@ int main(int argc, const char * argv[])
 				p[1]=genome[1];
 				p[2]=genome[2];
 				s=genome[0]+genome[1]+genome[2];
-				//if(s > 0.0001){
+				if(s > 0.00001){
 					for(i=0;i<3;i++)
 						p[i]/=s;
-				//}
+				} else {
+					p[0] = p[1] = p[2] = 0.0;
+				}
 			} else {
 				switch(MAPPING) {
 					case 0:
