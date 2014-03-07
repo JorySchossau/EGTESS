@@ -125,7 +125,7 @@ int main(int argc, const char * argv[])
 	if (argc >= 12){
 		useFile = true;
 		generations=atoi(argv[11]);
-		if (argc >= 13){
+		if (argc >= 12){
 			localmu=atof(argv[12]);
 			cout << "mu: " << localmu << endl;
 			if (argc >= 13){
