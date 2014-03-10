@@ -125,10 +125,10 @@ int main(int argc, const char * argv[])
 	if (argc >= 12){
 		useFile = true;
 		generations=atoi(argv[11]);
-		if (argc >= 12){
+		if (argc >= 13){
 			localmu=atof(argv[12]);
 			cout << "mu: " << localmu << endl;
-			if (argc >= 13){
+			if (argc >= 14){
 				deltamu=atof(argv[13]);
 				useLocalMutationFlag=true;
 				cout << "deltamu: " << deltamu << endl;
