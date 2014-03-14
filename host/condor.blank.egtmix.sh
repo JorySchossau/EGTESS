@@ -36,9 +36,9 @@ transfer_executable = true
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 
-#output = $(INPUT_FILES).out
-#error = $(INPUT_FILES).err
-#log = $(INPUT_FILES).log
+output = $(PROGRAM).out
+error = $(PROGRAM).err
+log = $(PROGRAM).log
  
 # location of input files (and where to put output files)
 # in this example, we want each job to write the read and write data to a directory based on its job process

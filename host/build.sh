@@ -82,15 +82,16 @@ done
 #	fi
 #fi
 
-sed -ie "s/$GENES_DECLARATION/$GENES_DEFINE $GENES/" src/main.cpp
-sed -ie "s/$LOCALMU_DECLARATION/$LOCALMU_DEFINE $LOCALMU/" src/main.cpp
-sed -ie "s/$MAPPING_DECLARATION/$MAPPING_DEFINE $MAPPING/" src/main.cpp
-sed -ie "s/$SAMPLING_DECLARATION/$SAMPLING_DEFINE $SAMPLING/" src/main.cpp
+sed -e "s/$GENES_DECLARATION/$GENES_DEFINE $GENES/" src/main.cpp |
+sed -e "s/$LOCALMU_DECLARATION/$LOCALMU_DEFINE $LOCALMU/" | 
+sed -e "s/$MAPPING_DECLARATION/$MAPPING_DEFINE $MAPPING/" | 
+sed -e "s/$SAMPLING_DECLARATION/$SAMPLING_DEFINE $SAMPLING/" >> src/mainToBuild.cpp
 
 $COMPILER -O3 -s -fno-rtti -fno-exceptions -o bin/$EXENAME$EXTENSION src/main.cpp;
 #if [ "$COMPILER" != "g++" ]; then i386-mingw32-strip bin/$EXENAME$EXTENSION; fi
+rm src/mainToBuild.cpp
 
-sed -ie "s/$LOCALMU_DEFINE $LOCALMU/$LOCALMU_DECLARATION/" src/main.cpp
-sed -ie "s/$GENES_DEFINE $GENES/$GENES_DECLARATION/" src/main.cpp
-sed -ie "s/$MAPPING_DEFINE $MAPPING/$MAPPING_DECLARATION/" src/main.cpp
-sed -ie "s/$SAMPLING_DEFINE $SAMPLING/$SAMPLING_DECLARATION/" src/main.cpp
+#sed -ie "s/$LOCALMU_DEFINE $LOCALMU/$LOCALMU_DECLARATION/" src/main.cpp
+#sed -ie "s/$GENES_DEFINE $GENES/$GENES_DECLARATION/" src/main.cpp
+#sed -ie "s/$MAPPING_DEFINE $MAPPING/$MAPPING_DECLARATION/" src/main.cpp
+#sed -ie "s/$SAMPLING_DEFINE $SAMPLING/$SAMPLING_DECLARATION/" src/main.cpp
