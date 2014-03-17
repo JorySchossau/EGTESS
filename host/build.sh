@@ -87,7 +87,7 @@ sed -e "s/$LOCALMU_DECLARATION/$LOCALMU_DEFINE $LOCALMU/" |
 sed -e "s/$MAPPING_DECLARATION/$MAPPING_DEFINE $MAPPING/" | 
 sed -e "s/$SAMPLING_DECLARATION/$SAMPLING_DEFINE $SAMPLING/" >> src/mainToBuild.cpp
 
-$COMPILER -O3 -s -fno-rtti -fno-exceptions -o bin/$EXENAME$EXTENSION src/main.cpp;
+$COMPILER -O3 -s -fno-rtti -fno-exceptions -o bin/$EXENAME$EXTENSION src/mainToBuild.cpp;
 #if [ "$COMPILER" != "g++" ]; then i386-mingw32-strip bin/$EXENAME$EXTENSION; fi
 rm src/mainToBuild.cpp
 

@@ -318,6 +318,8 @@ int main(int argc, const char * argv[])
 			tag=from->tag;
 			localMutationRate=from->localMutationRate;
 			localMutationDelta=from->localMutationDelta;
+			for(i=0;i<GENES;i++)
+				genome[i]=from->genome[i];
 			if(randDouble<localMutationRate){
 				if (LOCALMU == true) {
 					for(i=0;i<GENES;i++)
@@ -334,10 +336,6 @@ int main(int argc, const char * argv[])
 						genome[i]=randDouble;
 					}
 				}
-			}
-			else{
-				for(i=0;i<GENES;i++)
-					genome[i]=from->genome[i];
 			}
 			makeRPSprob();
 		}
