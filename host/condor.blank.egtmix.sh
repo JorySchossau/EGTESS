@@ -19,6 +19,9 @@ PROGRAM=XPROGRAMX
 #PERIOD=XPERIODX
 LOCALMU=XLOCALMUX
 DELTAMU=XDELTAMUX
+INIT1=XINIT1X
+INIT2=XINIT2X
+INIT3=XINIT3X
 
 universe = vanilla
  
@@ -53,6 +56,6 @@ run_as_owner = false
 requirements = (OpSys == "WINNT61") && (Arch == "X86_64")
 #requirements = (OpSys == "WINNT51") && (Arch == "INTEL")
  
-arguments = XPMX $(OUTPUT_NAME).$(Process) $(GENERATIONS) $(LOCALMU) $(DELTAMU)
+arguments = XPMX $(OUTPUT_NAME).$(Process) $(GENERATIONS) $(LOCALMU) $(DELTAMU) $(INIT1) $(INIT2) $(INIT3)
 
 queue $(RUNS)

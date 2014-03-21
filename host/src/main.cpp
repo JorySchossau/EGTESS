@@ -23,6 +23,7 @@
 #include <unistd.h>
 #endif
 
+// parameters controlled by build script
 #define DISTRIBUTION
 #define GENES 2
 #define LOCALMU false
@@ -112,6 +113,8 @@ int main(int argc, const char * argv[])
 	char distFileName[1<<10];
 	bool useFile=false;
 	bool useLocalMutationFlag=false;
+	bool consistentStart=false;
+	double init1=0.0,init2=0.0,init3=0.0;
 	int generations;
 	int transitionPeriod; // how many generations to go from 1 table to the other
 	bool dynamicEnvironment=false; // do we use oscillating environment?
@@ -132,6 +135,17 @@ int main(int argc, const char * argv[])
 				deltamu=atof(argv[13]);
 				useLocalMutationFlag=true;
 				cout << "deltamu: " << deltamu << endl;
+				if (argc >=15) {
+					consistentStart=true;
+					init1=atof(argv[14]);
+					init2=atof(argv[15]);
+					cout << "start: [" << init1 << ", " << init2;
+					if (argc >=17) {
+						init3=atof(argv[16]);
+						cout << ", " << init3;
+					}
+					cout << "]" << endl;
+				}
 			}
 		} else
 			transitionPeriod=0; // 0 will cause an error if used in staticEnvironment
@@ -160,6 +174,8 @@ int main(int argc, const char * argv[])
 		A->setupRand();
 		//A->tag=rand()%3;
 		A->tag=3;
+		if (consistentStart)
+			A->tag=4;
 		if (GENES == 2)
 			switch(A->tag){
 				case 0:
@@ -178,6 +194,12 @@ int main(int argc, const char * argv[])
 					A->genome[0]=1.0;
 					A->genome[1]=1.0;
 					A->localMutationRate=0.0;
+					A->localMutationDelta=deltamu;
+					break;
+				case 4:
+					A->genome[0]=init1;
+					A->genome[1]=init2;
+					A->localMutationRate=localmu;
 					A->localMutationDelta=deltamu;
 					break;
 				default:
@@ -207,6 +229,13 @@ int main(int argc, const char * argv[])
 					A->genome[1]=0.0;
 					A->genome[2]=1.0;
 					A->localMutationRate=0.0;
+					A->localMutationDelta=deltamu;
+					break;
+				case 4:
+					A->genome[0]=init1;
+					A->genome[1]=init2;
+					A->genome[2]=init3;
+					A->localMutationRate=localmu;
 					A->localMutationDelta=deltamu;
 					break;
 				default:
