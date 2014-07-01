@@ -25,7 +25,6 @@ INIT3=XINIT3X
 
 universe = vanilla
  
-# with two executables, you will be able to run on all execute hosts available at MSU
 executable = $(RUN_DIR)/$(PROGRAM)
 
 # copy executable to machine
@@ -53,8 +52,8 @@ run_as_owner = false
  
 # system requirements
 # if you only want to run on the windows condor cluster, you should list the folowing line
-requirements = (OpSys == "WINNT61") && (Arch == "X86_64")
-#requirements = (OpSys == "WINNT51") && (Arch == "INTEL")
+#requirements = (OpSys == "WINNT61") && (Arch == "X86_64") #only for XSEDE cluster
+requirements = (OpSys == "WINNT51") && (Arch == "INTEL") #only for MSU cluster
  
 arguments = XPMX $(OUTPUT_NAME).$(Process) $(GENERATIONS) $(LOCALMU) $(DELTAMU) $(INIT1) $(INIT2) $(INIT3)
 

@@ -1,8 +1,7 @@
 //
 //  main.cpp
-//  CrowdSourcing
 //
-//  Created by Arend Hintze on 2/6/13.
+//  Created by Arend Hintze on 2/6/13, modified and extended by Jory Schossau.
 //  Copyright (c) 2013 MPI-BERLIN. All rights reserved.
 //
 
@@ -36,14 +35,7 @@ int globalUpdate=0;
 using namespace std;
 double w=1.0; //selection strength
 
-//#define popSize (1<<12) // 4096
 #define popSize (1<<10) // 1024
-//#define popSize (1<<9) // 512
-//#define popSize (1<<8) // 256
-//#define popSize (1<<7) // 128 or ~11x11
-//#define popSize (1<<6) // 64
-//#define popSize (1<<5) // 32
-//#define popSize (1<<4) // 16
 
 class tAgent{
 	public:
@@ -65,22 +57,7 @@ class tAgent{
 		void makeRPSprob(void);
 };
 
-//double PM[3][3]={{0.5,10.0,10.0},{1.0,0.5,0.0},{0.0,1.0,0.5}};
-//y=\frac{\left(cos\left(\left(\frac{pi}{5}\right)x\right)+1\right)}{2}
-//double PM[3][3]={{0.5,0.0,1.0},{1.0,0.5,0.0},{1.0,2.0,6.0}};
-//double PM[3][3]={{0.5,0.0,1.0},{1.0,0.5,0.0},{0.0,1.0,0.5}};
-//double PM[3][3]={{0.0,0.0,1.0},{1.0,0.0,0.0},{0.0,1.0,0.0}};
-//double PM[3][3]={{0.0,1.0,0.0},{0.4,0.0,0.0},{0.28571,0.28571,0.0}};
-//double PM[3][3]={{0.0,1.0,0.0},{1.0,0.0,0.0},{0.5,0.5,0.0}};
-//double PM[3][3]={{1.0,2.0,2.0},{0.0,1.0,4.0},{2.0,2.0,1.0}};
-//double PM[3][3]={{9.0,18.0,6.0},{0.0,9.0,14.0},{19.0,7.0,9.0}};
-//double PM[3][3]={{0.0,1.0,1.0},{1.0,0.0,1.0},{1.0,1.0,0.0}};
 double PM[3][3]={{0.0,0.0,0.0},{0.0,0.0,0.0},{1.0,0.0,0.0}};
-//double PM[3][3]={{0.0,1.0,0.0},{0.6,0.0,0.0},{0.375,0.375,0.0}};
-//double PM[3][3]={{0.0,1.0,0.0},{0.8,0.0,0.0},{0.44444,0.44444,0.0}};
-//double PM[3][3]={{0.0,1.0,0.0},{1.0,0.0,0.0},{0.5,0.5,0.0}};
-double PM_SCISSORS[3][3]={{0.0,0.0,1.0},{2.0,0.0,0.0},{0.0,3.0,0.0}};
-double PM_ROCK[3][3]={{0.0,0.0,3.0},{2.0,0.0,0.0},{0.0,1.0,0.0}};
 
 vector<tAgent*> population;
 double payoffs[popSize][popSize];
@@ -93,11 +70,10 @@ void showPayoffs(void);
 void popCheck(void);
 void recalculateSingle(int who);
 double play(tAgent *A,tAgent *B);
-void xFadeTables(double target[][3], const double from[][3], const double to[][3], int length, int currentTimestep);
 void readPMfromCL(int argc, const char * argv[]);
 
-// INPUTS (12)
-// prog 1 2 3 4 5 6 7 8 9 phylogenyFileName generations transitionPeriod
+// INPUTS (11 required) + (5 optional)
+// ./prog 1 2 3 4 5 6 7 8 9 outFileName numUpdates [localMu [deltaMu [initStratA initStratB [initStratC]]]]
 
 int main(int argc, const char * argv[])
 {
@@ -115,9 +91,7 @@ int main(int argc, const char * argv[])
 	bool useLocalMutationFlag=false;
 	bool consistentStart=false;
 	double init1=0.0,init2=0.0,init3=0.0;
-	int generations;
-	int transitionPeriod; // how many generations to go from 1 table to the other
-	bool dynamicEnvironment=false; // do we use oscillating environment?
+	int generations; // these are updates, but we call them generations which is a misnomer
 	map<int,double> popDynamic;
 	readPMfromCL(argc, argv); // set the payoff matrix from command line params
 	if (!useLocalMutationFlag)
@@ -147,9 +121,7 @@ int main(int argc, const char * argv[])
 					cout << "]" << endl;
 				}
 			}
-		} else
-			transitionPeriod=0; // 0 will cause an error if used in staticEnvironment
-
+		}
 	} else
 		generations=500000;
 	if (useFile) {
@@ -167,42 +139,42 @@ int main(int argc, const char * argv[])
 	} else
 		printf("paper,rock,scissors,mixed\n");
 	srand((int)getpid()); // this is not cross-platofrm. Changed for condor compat.
-	//srand(time(NULL)); // condor compatible
+	//srand(time(NULL)); // condor/windows compatible
 	population.clear();
 	for(i=0;i<popSize;i++){
 		tAgent *A=new tAgent;
 		A->setupRand();
 		//A->tag=rand()%3;
-		A->tag=3;
+		A->tag=4;
 		if (consistentStart)
-			A->tag=4;
+			A->tag=3;
 		if (GENES == 2)
 			switch(A->tag){
-				case 0:
+				case 0: // all strategy A
 					A->genome[0]=0.0;
 					A->genome[1]=1.0;
 					A->localMutationRate=0.0;
 					A->localMutationDelta=deltamu;
 					break;
-				case 1:
+				case 1: // all strategy B
 					A->genome[0]=1.0;
 					A->genome[1]=0.0;
 					A->localMutationRate=0.0;
 					A->localMutationDelta=deltamu;
 					break;
-				case 2:
+				case 2: // all strategy C
 					A->genome[0]=1.0;
 					A->genome[1]=1.0;
 					A->localMutationRate=0.0;
 					A->localMutationDelta=deltamu;
 					break;
-				case 4:
+				case 3: // all with the supplied strategy ratios
 					A->genome[0]=init1;
 					A->genome[1]=init2;
 					A->localMutationRate=localmu;
 					A->localMutationDelta=deltamu;
 					break;
-				default:
+				default: // all with random strategy ratios
 					A->setupRand();
 					A->localMutationRate=localmu;
 					A->localMutationDelta=deltamu;
@@ -210,35 +182,35 @@ int main(int argc, const char * argv[])
 			}
 		else
 			switch(A->tag){
-				case 0:
+				case 0: // all strategy A
 					A->genome[0]=1.0;
 					A->genome[1]=0.0;
 					A->genome[2]=0.0;
 					A->localMutationRate=0.0;
 					A->localMutationDelta=deltamu;
 					break;
-				case 1:
+				case 1: // all strategy B
 					A->genome[0]=0.0;
 					A->genome[1]=1.0;
 					A->genome[2]=0.0;
 					A->localMutationRate=0.0;
 					A->localMutationDelta=deltamu;
 					break;
-				case 2:
+				case 2: // all strategy C
 					A->genome[0]=0.0;
 					A->genome[1]=0.0;
 					A->genome[2]=1.0;
 					A->localMutationRate=0.0;
 					A->localMutationDelta=deltamu;
 					break;
-				case 4:
+				case 3: // all with supplied strategy ratios
 					A->genome[0]=init1;
 					A->genome[1]=init2;
 					A->genome[2]=init3;
 					A->localMutationRate=localmu;
 					A->localMutationDelta=deltamu;
 					break;
-				default:
+				default: // all with random strategy ratios
 					A->setupRand();
 					A->localMutationRate=localmu;
 					A->localMutationDelta=deltamu;
@@ -270,16 +242,6 @@ int main(int argc, const char * argv[])
 		population[deadGuy]->inherit(population[newGuy]);
 		recalculateSingle(deadGuy);
 		if((globalUpdate& SAMPLING )==0){
-			//if((globalUpdate&8191)==0){
-			//if((globalUpdate&4095)==0){
-			//if((globalUpdate&2047)==0){
-			//if((globalUpdate&1023)==0){
-			//if((globalUpdate&511)==0){
-			//if((globalUpdate&255)==0){
-			//if((globalUpdate&127)==0){
-			//if((globalUpdate&63)==0){
-			//if((globalUpdate&31)==0){
-			//if((globalUpdate&15)==0){
 			cout<<globalUpdate<<" ";
 			popCheck();
 			cout<<endl;
@@ -443,16 +405,10 @@ int main(int argc, const char * argv[])
 					p[2] /= s;
 				}
 			}
-			//for(i=0;i<3;i++) {
-			//	if (p[i] > 1.0)
-			//		p[i] = 1.0;
-			//	if (p[i] < 0.0001)
-			//		p[i] = 0.0001;
-			//}
 		}
 
 
-		// *** regular functions
+		// *** play agents against each other
 
 		void recalculateEverything(void){
 			int i,j;
