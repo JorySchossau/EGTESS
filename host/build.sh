@@ -82,12 +82,14 @@ done
 #	fi
 #fi
 
-sed -e "s/$GENES_DECLARATION/$GENES_DEFINE $GENES/" | 
-sed -e "s/$LOCALMU_DECLARATION/$LOCALMU_DEFINE $LOCALMU/" | 
-sed -e "s/$MAPPING_DECLARATION/$MAPPING_DEFINE $MAPPING/" | 
-sed -e "s/$SAMPLING_DECLARATION/$SAMPLING_DEFINE $SAMPLING/" src/mainToBuild.cpp
+cp src/main.cpp src/mainToBuild.cpp
+
+sed -e "s/$GENES_DECLARATION/$GENES_DEFINE $GENES/" src/mainToBuild.cpp > /dev/null
+sed -e "s/$LOCALMU_DECLARATION/$LOCALMU_DEFINE $LOCALMU/" src/mainToBuild.cpp > /dev/null
+sed -e "s/$MAPPING_DECLARATION/$MAPPING_DEFINE $MAPPING/" src/mainToBuild.cpp > /dev/null
+sed -e "s/$SAMPLING_DECLARATION/$SAMPLING_DEFINE $SAMPLING/" src/mainToBuild.cpp > /dev/null
 
 $COMPILER -O3 -s -fno-rtti -fno-exceptions -o bin/$EXENAME$EXTENSION src/mainToBuild.cpp;
-#if [ "$COMPILER" != "g++" ]; then i386-mingw32-strip bin/$EXENAME$EXTENSION; fi
+if [ "$COMPILER" != "g++" ]; then i386-mingw32-strip bin/$EXENAME$EXTENSION; fi
 
 rm src/mainToBuild.cpp
